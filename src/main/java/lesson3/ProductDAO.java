@@ -32,39 +32,39 @@ public class ProductDAO {
 
     public Product update(Product product) {
 
-            try (Connection connection = getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement
-                         ("UPDATE PRODUCT SET NAME = ?, DESCRIPTION = ?, PRICE = ? WHERE ID = ?")) {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement
+                     ("UPDATE PRODUCT SET NAME = ?, DESCRIPTION = ?, PRICE = ? WHERE ID = ?")) {
 
-                preparedStatement.setString(1, product.getName());
-                preparedStatement.setString(2, product.getDescription());
-                preparedStatement.setInt(3, product.getPrice());
-                preparedStatement.setLong(4, product.getId());
+            preparedStatement.setString(1, product.getName());
+            preparedStatement.setString(2, product.getDescription());
+            preparedStatement.setInt(3, product.getPrice());
+            preparedStatement.setLong(4, product.getId());
 
-                int res = preparedStatement.executeUpdate();
-                System.out.println("save finished with result " + res);
-                return product;
-            } catch (SQLException e) {
-                System.err.println("Something went wrong");
-                e.printStackTrace();
-            }
+            int res = preparedStatement.executeUpdate();
+            System.out.println("save finished with result " + res);
+            return product;
+        } catch (SQLException e) {
+            System.err.println("Something went wrong");
+            e.printStackTrace();
+        }
 
         return null;
 
     }
 
     public List<Product> getProducts() {
+        List<Product> products = new ArrayList<>();
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT  * FROM  PRODUCT");
-            List<Product> products = new ArrayList<>();
             while (resultSet.next()) {
                 Product product = new Product(resultSet.getLong(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getInt(4));
                 products.add(product);
             }
 
-           return products;
+            return products;
         } catch (SQLException e) {
             System.err.println("Something went wrong");
             e.printStackTrace();
@@ -81,15 +81,15 @@ public class ProductDAO {
             int res = preparedStatement.executeUpdate();
             System.out.println("save finished with result " + res);
         } catch (SQLException e) {
-        System.err.println("Something went wrong");
-        e.printStackTrace();
-    }
+            System.err.println("Something went wrong");
+            e.printStackTrace();
+        }
 
         return null;
 
     }
 
-    private Connection getConnection() throws SQLException{
+    private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
 

@@ -12,17 +12,17 @@ public class Solution {
     private static final String PASS = "11111111";
 
     public List<Product> findProductsByPrice(int price, int delta) {
-
+        List<Product> products = new ArrayList<>();
         try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT  * FROM  PRODUCT");
-            List<Product> products = new ArrayList<>();
+             PreparedStatement preparedStatement = connection.prepareStatement
+                     ("SELECT * FROM PRODUCT WHERE PRICE >= ? AND PRICE <=?")) {
+            preparedStatement.setInt(1, price - delta);
+            preparedStatement.setInt(2, price + delta);
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Product product = new Product(resultSet.getLong(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getInt(4));
-                if (product.getPrice() >= price - delta && product.getPrice() <= price + delta) {
-                    products.add(product);
-                }
+                products.add(product);
             }
 
             return products;
@@ -35,11 +35,11 @@ public class Solution {
     }
 
     public List<Product> findProductsByName(String word) throws Exception {
+        List<Product> products = new ArrayList<>();
         checkWord(word);
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT * FROM  PRODUCT");
-            List<Product> products = new ArrayList<>();
             while (resultSet.next()) {
                 int count = 0;
                 Product product = new Product(resultSet.getLong(1), resultSet.getString(2),
@@ -61,11 +61,10 @@ public class Solution {
     }
 
     public List<Product> findProductsWithEmptyDescription() {
-
+        List<Product> products = new ArrayList<>();
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery("SELECT  * FROM  PRODUCT");
-            List<Product> products = new ArrayList<>();
             while (resultSet.next()) {
                 Product product = new Product(resultSet.getLong(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getInt(4));

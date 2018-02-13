@@ -38,8 +38,9 @@ public class Solution {
         List<Product> products = new ArrayList<>();
         checkWord(word);
         try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM  PRODUCT");
+             PreparedStatement preparedStatement = connection.prepareStatement
+                     ("SELECT * FROM PRODUCT")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 int count = 0;
                 Product product = new Product(resultSet.getLong(1), resultSet.getString(2),
@@ -63,8 +64,9 @@ public class Solution {
     public List<Product> findProductsWithEmptyDescription() {
         List<Product> products = new ArrayList<>();
         try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("SELECT  * FROM  PRODUCT");
+             PreparedStatement preparedStatement = connection.prepareStatement
+                     ("SELECT * FROM PRODUCT")) {
+            ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Product product = new Product(resultSet.getLong(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getInt(4));

@@ -39,14 +39,16 @@ public class Solution {
         checkWord(word);
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement
-                     ("SELECT * FROM PRODUCT WHERE NAME LIKE ?")) {
-            preparedStatement.setString(1, "%" + word + "%");
+                     ("SELECT * FROM PRODUCT WHERE NAME = ?")) {
+            preparedStatement.setString(1, word);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Product product = new Product(resultSet.getLong(1), resultSet.getString(2),
                         resultSet.getString(3), resultSet.getInt(4));
-
-                products.add(product);
+               // String[] arr = product.getName().split(" ");
+               // if(arr.length == 1) {
+                    products.add(product);
+              //  }
             }
             return products;
         } catch (SQLException e) {
@@ -92,6 +94,7 @@ public class Solution {
                 throw new Exception("should only be letters " + word);
         if (word.length() < 3)
             throw new Exception("lenght too short " + word);
+        String[] arr = word.split(" ");
     }
 
     private String[] stringToArray(String string) {

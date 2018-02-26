@@ -41,7 +41,7 @@ public class StorageDAO {
         }
     }
 
-    public void update(Storage storage) throws SQLException {
+    public static void update(Storage storage) throws SQLException {
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("UPDATE STORAGES SET ID = ?, FORMATS = ?," +
                      " COUNTRY = ?, STORAGE_SIZE = ? WHERE ID = ?")) {
@@ -63,15 +63,17 @@ public class StorageDAO {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
+
                 storage = new Storage(
                         resultSet.getLong(1),
-                        resultSet.getString(2).split(" "),
+                        resultSet.getString(2)
+                                .replaceAll("\\[", "").replaceAll("\\]","").split(","),
                         resultSet.getString(3),
                         resultSet.getLong(4));
             }
 
             int res = preparedStatement.executeUpdate();
-            System.out.println("storage with " + id + " found " + res);
+            System.out.println("storage with id: " + id + " found with result: " + res);
             return storage;
         } catch (SQLException e) {
             System.err.println("Something went wrong in storage " + id);
@@ -98,6 +100,7 @@ public class StorageDAO {
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
+
 
 
 }

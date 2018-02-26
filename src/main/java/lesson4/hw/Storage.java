@@ -1,5 +1,6 @@
 package lesson4.hw;
 
+
 import java.util.Arrays;
 
 public class Storage {
@@ -29,5 +30,15 @@ public class Storage {
 
     public long getStorageSize() {
         return storageSize;
+    }
+
+    @Override
+    public String toString() {
+        return "Storage{" +
+                "id=" + id +
+                ", formatsSupported=" + Arrays.toString(formatsSupported) +
+                ", storageCountry='" + storageCountry + '\'' +
+                ", storageSize=" + storageSize +
+                '}';
     }
 }

@@ -55,7 +55,7 @@ public class FileDAO {
         }
     }
 
-    public File findById(long id) throws SQLException {
+    public File findById(long id) throws Exception {
         File file = null;
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT  * FROM FILES WHERE FILE_ID = ?")) {
@@ -81,7 +81,7 @@ public class FileDAO {
     }
 
 
-    public static ArrayList<File> findAllFilesByStorageId(long id) throws SQLException {
+    public static ArrayList<File> findAllFilesByStorageId(long id) throws Exception {
         ArrayList<File> files = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM FILES WHERE STORAGE_ID = ?")) {

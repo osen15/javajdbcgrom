@@ -1,15 +1,15 @@
 package lesson4.hw;
 
 public class File {
-    private  long id;
-    private  String name;
-    private  String format;
-    private  long size;
-    private  long storageId;
+    private long id;
+    private String name;
+    private String format;
+    private long size;
+    private long storageId;
 
-    public File(long id, String name, String format, long size, long storageId) {
+    public File(long id, String name, String format, long size, long storageId) throws Exception {
         this.id = id;
-        this.name = name;
+        this.name = lengthCheck(name);
         this.format = format;
         this.size = size;
         this.storageId = storageId;
@@ -37,6 +37,13 @@ public class File {
 
     public void setStorageId(long storageId) {
         this.storageId = storageId;
+    }
+
+
+    private String lengthCheck(String name) throws Exception {
+        if (name.length() > 10)
+            throw new Exception("too large file name: " + name);
+        return name;
     }
 
     @Override

@@ -17,8 +17,8 @@ public class StorageDAO {
         try (Connection connection = getConnection();
              PreparedStatement statementStr = connection.prepareStatement("DELETE FROM STORAGES WHERE STORAGE_ID = ?")) {
             statementStr.setLong(1, id);
-            int res = statementStr.executeUpdate();
-            System.out.println("save finished " + res);
+            statementStr.executeUpdate();
+            System.out.println("storage with: " + id + "deleted ");
         } catch (SQLException e) {
             throw new SQLException(e.getMessage() + "Issue with storage ID: " + id);
         }
@@ -31,8 +31,8 @@ public class StorageDAO {
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO STORAGES VALUES (?, ?, ?, ?)")) {
 
             storagePrepared(preparedStatement, storage);
-            int res = preparedStatement.executeUpdate();
-            System.out.println("save finished " + res);
+            preparedStatement.executeUpdate();
+            System.out.println("storage with id: " + storage.getId() + "saved");
 
 
         } catch (SQLException e) {
@@ -47,11 +47,11 @@ public class StorageDAO {
                      " COUNTRY = ?, STORAGE_SIZE = ? WHERE ID = ?")) {
             storagePrepared(preparedStatement, storage);
             preparedStatement.setLong(5, storage.getId());
-            int res = preparedStatement.executeUpdate();
-            System.out.println("update finished " + res);
+            preparedStatement.executeUpdate();
+            System.out.println("storage with id: " + storage.getId() + " updated");
 
         } catch (SQLException e) {
-            System.err.println("Something went wrong " + storage.getId());
+            System.err.println("Something went wrong in storage: " + storage.getId());
             throw e;
         }
     }
@@ -67,13 +67,13 @@ public class StorageDAO {
                 storage = new Storage(
                         resultSet.getLong(1),
                         resultSet.getString(2)
-                                .replaceAll("\\[", "").replaceAll("\\]","").split(","),
+                                .replaceAll("\\[", "").replaceAll("\\]", "").split(","),
                         resultSet.getString(3),
                         resultSet.getLong(4));
             }
 
-            int res = preparedStatement.executeUpdate();
-            System.out.println("storage with id: " + id + " found with result: " + res);
+            preparedStatement.executeUpdate();
+            System.out.println("storage with id: " + id + " found in the table");
             return storage;
         } catch (SQLException e) {
             System.err.println("Something went wrong in storage " + id);
@@ -100,7 +100,6 @@ public class StorageDAO {
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASS);
     }
-
 
 
 }

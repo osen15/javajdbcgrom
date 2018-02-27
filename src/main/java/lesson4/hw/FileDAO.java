@@ -16,8 +16,8 @@ public class FileDAO {
              PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO FILES VALUES (?, ?, ?, ?, ?)")) {
 
             filePrepared(preparedStatement, file);
-            int res = preparedStatement.executeUpdate();
-            System.out.println("save finished " + res);
+            preparedStatement.executeUpdate();
+            System.out.println("file with id: " + file.getId() + " saved");
 
 
         } catch (SQLException e) {
@@ -30,8 +30,8 @@ public class FileDAO {
         try (Connection connection = getConnection();
              PreparedStatement statementStr = connection.prepareStatement("DELETE FROM FILES WHERE ID = ?")) {
             statementStr.setLong(1, id);
-            int res = statementStr.executeUpdate();
-            System.out.println("file deleted with result: " + res);
+            statementStr.executeUpdate();
+            System.out.println("file with id: " + id + "deleted");
         } catch (SQLException e) {
             throw new SQLException("Something went wrong fileID: " + id);
         }
@@ -46,8 +46,8 @@ public class FileDAO {
             filePrepared(preparedStatement, file);
             preparedStatement.setLong(6, file.getId());
 
-            int res = preparedStatement.executeUpdate();
-            System.out.println("update finished " + res);
+            preparedStatement.executeUpdate();
+            System.out.println("File with id: " + file.getId() + "updated");
 
         } catch (SQLException e) {
             System.err.println("Something went wrong " + file.getId());
@@ -99,7 +99,7 @@ public class FileDAO {
                 files.add(file);
             }
         } catch (SQLException e) {
-            throw new SQLException(e.getMessage() + "Something went wrong " + id);
+            throw new SQLException(e.getMessage() + "Something went wrong");
         }
 
         return files;

@@ -17,7 +17,7 @@ public class Demo {
 
         Storage storage1 = new Storage(1, strings, "UKR", 1000000);
         Storage storage3 = new Storage(3, strings, "UKR", 1000000);
-       // System.out.println(Service.formatSupport(StorageDAO.findById(storage1.getId()).getFormatsSupported(), file3.getFormat()));
+       // System.out.println(Utils.formatSupport(StorageDAO.findById(storage1.getId()).getFormatsSupported(), file3.getFormat()));
 
         //   StorageDAO.save(storage3);
         //  System.out.println(Arrays.toString(StorageDAO.findById(1).getFormatsSupported()));

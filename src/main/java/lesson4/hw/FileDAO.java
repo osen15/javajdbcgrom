@@ -1,5 +1,7 @@
 package lesson4.hw;
 
+import lesson3.Product;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -10,25 +12,44 @@ public class FileDAO {
     private static final String PASS = "11111111";
 
 
-    public static void save(File file) throws SQLException {
+    public static File save(File file) throws Exception {
+        try (Connection connection = getConnection()) {
+            return save(file, connection);
+        } catch (SQLException e) {
+            System.err.println("Something went wrong");
+            e.printStackTrace();
+        }
+        return  null;
+    }
 
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO FILES VALUES (?, ?, ?, ?, ?)")) {
+    public static File save(File file, Connection connection) throws Exception {
 
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO FILES VALUES (?, ?, ?, ?, ?)")) {
             filePrepared(preparedStatement, file);
             preparedStatement.executeUpdate();
             System.out.println("file with id: " + file.getId() + " saved");
-
-
         } catch (SQLException e) {
             System.err.println("Something went wrong " + file.getId());
             throw e;
         }
+
+        return file;
     }
 
-    public static void delete(long id) throws SQLException {
-        try (Connection connection = getConnection();
-             PreparedStatement statementStr = connection.prepareStatement("DELETE FROM FILES WHERE ID = ?")) {
+
+    public static void delete(long id) throws Exception {
+        try (Connection connection = getConnection()) {
+            delete(id, connection);
+        } catch (SQLException e) {
+            System.err.println("Something went wrong");
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static void delete(long id, Connection connection) throws SQLException {
+        try (PreparedStatement statementStr = connection.prepareStatement("DELETE FROM FILES WHERE ID = ?")) {
             statementStr.setLong(1, id);
             statementStr.executeUpdate();
             System.out.println("file with id: " + id + "deleted");
@@ -38,10 +59,20 @@ public class FileDAO {
     }
 
 
-    public static void update(File file) throws SQLException {
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("UPDATE FILES SET ID = ?, FILE_NAME = ?," +
-                     " FILE_FORMAT = ?, FILE_SIZE = ?, STORAGE_ID = ? WHERE ID = ?")) {
+    public static void update(File file) throws Exception {
+        try (Connection connection = getConnection()) {
+            update(file, connection);
+        } catch (SQLException e) {
+            System.err.println("Something went wrong");
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public static void update(File file, Connection connection) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE FILES SET ID = ?, FILE_NAME = ?," +
+                " FILE_FORMAT = ?, FILE_SIZE = ?, STORAGE_ID = ? WHERE ID = ?")) {
 
             filePrepared(preparedStatement, file);
             preparedStatement.setLong(6, file.getId());
@@ -55,10 +86,21 @@ public class FileDAO {
         }
     }
 
-    public File findById(long id) throws Exception {
+
+    public static File findById(long id) throws Exception {
+        try (Connection connection = getConnection()) {
+            return findById(id, connection);
+        } catch (SQLException e) {
+            System.err.println("Something went wrong");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public static File findById(long id, Connection connection) throws Exception {
         File file = null;
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT  * FROM FILES WHERE FILE_ID = ?")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT  * FROM FILES WHERE FILE_ID = ?")) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -81,10 +123,9 @@ public class FileDAO {
     }
 
 
-    public static ArrayList<File> findAllFilesByStorageId(long id) throws Exception {
+    public static ArrayList<File> findAllFilesByStorageId(long id,Connection connection) throws Exception {
         ArrayList<File> files = new ArrayList<>();
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM FILES WHERE STORAGE_ID = ?")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM FILES WHERE STORAGE_ID = ?")) {
             preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();

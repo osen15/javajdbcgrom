@@ -5,22 +5,26 @@ public class Controller {
 
 
     public static void put(Storage storage, File file) throws Exception {
-        Service.put(storage, file);
+        GeneralDAO.put(storage, file);
+
 
     }
 
     public static void delete(Storage storage, File file) throws Exception {
-        Service.delete(storage, file);
+        GeneralDAO.delete(storage, file);
+
 
     }
 
     public static void transferAll(Storage storageFrom, Storage storageTo) throws Exception {
-        Service.transferAll(storageFrom, storageTo);
+        GeneralDAO.transferAll(storageFrom, storageTo);
+
 
     }
 
     public static void transferFile(Storage storageFrom, Storage storageTo, long id) throws Exception {
-        Service.transferFile(storageFrom, storageTo, id);
+        GeneralDAO.transferFile(storageFrom, storageTo, id);
+
     }
 
 

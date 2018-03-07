@@ -30,41 +30,29 @@ public class GeneralDAO {
         }
     }
 
-    public static void transferAll(Storage storageFrom, Storage storageTo) throws Exception {
-        try (Connection connection = getConnection()) {
-            transferAll(storageFrom, storageTo, connection);
-
-        } catch (SQLException e) {
-            System.err.println("Something went wrong");
-            e.printStackTrace();
-        }
-    }
-
-    public static void transferFile(Storage storageFrom, Storage storageTo, long id) throws Exception {
-        try (Connection connection = getConnection()) {
-            transferFile(storageFrom, storageTo, id, connection);
-
-        } catch (SQLException e) {
-            System.err.println("Something went wrong");
-            e.printStackTrace();
-        }
-    }
-
 
     private static void put(Storage storage, File file, Connection connection) throws Exception {
+        long fileIDInStorage;
+
         try {
             connection.setAutoCommit(false);
-            Utils.freePlaceForFile(StorageDAO.findById(storage.getId(), connection), file);
-            if (FileDAO.findById(file.getId(), connection) != null)
-                throw new Exception("file with id: " + file.getId() + " already exists");
-            FileDAO.save(file);
+            fileIDInStorage = FileDAO.findById(file.getId(), connection).getId();
+            storage = StorageDAO.findById(storage.getId(), connection);
+            if (fileIDInStorage != file.getId())
+                for (String format : storage.getFormatsSupported()) {
+                    if (format.equals(file.getFormat()) &&
+                            Utils.freePlaceInStorage(storage, FileDAO.findAllFilesByStorageId(storage.getId(), connection))
+                                    >= file.getSize()) {
+                        FileDAO.save(file, connection);
+                    }
+                }
 
             connection.commit();
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
             connection.rollback();
-            e.printStackTrace();
+            throw e;
         }
 
     }
@@ -83,22 +71,23 @@ public class GeneralDAO {
         } catch (SQLException e) {
             System.err.println("Something went wrong");
             connection.rollback();
-            e.printStackTrace();
+            throw e;
         }
 
     }
 
-    private static void transferAll(Storage storageFrom, Storage storageTo, Connection connection) throws Exception {
+    public static void transferAll(Storage storageFrom, Storage storageTo) throws Exception {
         long storageFromId;
         long storageToId;
 
-        try {
+        try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
             storageFromId = StorageDAO.findById(storageFrom.getId(), connection).getId();
             storageToId = StorageDAO.findById(storageTo.getId(), connection).getId();
 
-            if (Utils.sizeOfAllFiles(FileDAO.findAllFilesByStorageId(storageFromId, connection)) >
-                    StorageDAO.findById(storageToId, connection).getStorageSize())
+            if (Utils.freePlaceInStorage(storageTo, FileDAO.findAllFilesByStorageId(storageToId, connection)) <
+                    Utils.sizeOfAllFilesinStorage(FileDAO.findAllFilesByStorageId(storageFromId, connection)))
+
                 throw new Exception("storage with id: " + storageToId + " no free space");
             for (File file : FileDAO.findAllFilesByStorageId(storageFromId, connection)) {
                 Utils.formatSupport(StorageDAO.findById(storageToId, connection).getFormatsSupported(), file.getFormat());
@@ -111,39 +100,34 @@ public class GeneralDAO {
 
         } catch (SQLException e) {
             System.err.println("Something went wrong");
-            connection.rollback();
-            e.printStackTrace();
+            throw e;
         }
 
     }
 
-    private static void transferFile(Storage storageFrom, Storage storageTo, long id, Connection connection) throws Exception {
+    public static void transferFile(Storage storageFrom, Storage storageTo, long id) throws Exception {
 
 
-        try {
+        try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
             StorageDAO.findById(storageFrom.getId(), connection);
             storageTo = StorageDAO.findById(storageTo.getId(), connection);
             File file = FileDAO.findById(id, connection);
 
-            Utils.freePlaceForFile(StorageDAO.findById(storageTo.getId(), connection), file);
-            for (String format : storageTo.getFormatsSupported()) {
-                if (file.getFormat().equals(format)) {
-                    file.setStorageId(storageTo.getId());
-                    FileDAO.update(file, connection);
+            if (Utils.freePlaceInStorage(storageTo, FileDAO.findAllFilesByStorageId(storageTo.getId(), connection)) >= file.getSize())
+                for (String format : storageTo.getFormatsSupported()) {
+                    if (file.getFormat().equals(format)) {
+                        file.setStorageId(storageTo.getId());
+                        FileDAO.update(file, connection);
+                    }
                 }
-            }
 
 
             connection.commit();
 
-        } catch (
-                SQLException e)
-
-        {
+        } catch (SQLException e) {
             System.err.println("Something went wrong");
-            connection.rollback();
-            e.printStackTrace();
+            throw e;
         }
 
     }

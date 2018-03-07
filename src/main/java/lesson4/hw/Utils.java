@@ -16,14 +16,7 @@ public class Utils {
     }
 
 
-    public static void freePlaceForFile(Storage storage, File file) throws Exception {
-        if (storage.getStorageSize() - file.getSize() < file.getSize())
-            throw new Exception("there is no place in the storage with id " + storage.getId());
-
-    }
-
-
-    private static long freePlaceInStorage(Storage storage, List<File> files) {
+    public static long freePlaceInStorage(Storage storage, List<File> files) {
         long sum = 0;
         for (File file : files) {
             sum += file.getSize();
@@ -32,7 +25,7 @@ public class Utils {
         return storage.getStorageSize() - sum;
     }
 
-    public static long sizeOfAllFiles(List<File> files) {
+    public static long sizeOfAllFilesinStorage(List<File> files) {
         long sum = 0;
         for (File file : files) {
             sum += file.getId();

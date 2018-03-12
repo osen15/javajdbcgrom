@@ -4,6 +4,7 @@ package lesson4.hw;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class GeneralDAO {
     private static final String DB_URL = "jdbc:oracle:thin:@gromcode-lessons.coh7tfxx59uf.eu-central-1.rds.amazonaws.com:1521:ORCL";
@@ -32,20 +33,15 @@ public class GeneralDAO {
 
 
     private static void put(Storage storage, File file, Connection connection) throws Exception {
-        long fileIDInStorage;
+
 
         try {
             connection.setAutoCommit(false);
-            fileIDInStorage = FileDAO.findById(file.getId(), connection).getId();
+            file = FileDAO.findById(file.getId(), connection);
             storage = StorageDAO.findById(storage.getId(), connection);
-            if (fileIDInStorage != file.getId())
-                for (String format : storage.getFormatsSupported()) {
-                    if (format.equals(file.getFormat()) &&
-                            Utils.freePlaceInStorage(storage, FileDAO.findAllFilesByStorageId(storage.getId(), connection))
-                                    >= file.getSize()) {
-                        FileDAO.save(file, connection);
-                    }
-                }
+            validation(storage, file, connection);
+            FileDAO.save(file, connection);
+
 
             connection.commit();
 
@@ -77,21 +73,32 @@ public class GeneralDAO {
     }
 
     public static void transferAll(Storage storageFrom, Storage storageTo) throws Exception {
-        long storageFromId;
-        long storageToId;
+
 
         try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
-            storageFromId = StorageDAO.findById(storageFrom.getId(), connection).getId();
-            storageToId = StorageDAO.findById(storageTo.getId(), connection).getId();
 
-            if (Utils.freePlaceInStorage(storageTo, FileDAO.findAllFilesByStorageId(storageToId, connection)) <
-                    Utils.sizeOfAllFilesinStorage(FileDAO.findAllFilesByStorageId(storageFromId, connection)))
+            storageFrom = StorageDAO.findById(storageFrom.getId(), connection);
 
-                throw new Exception("storage with id: " + storageToId + " no free space");
-            for (File file : FileDAO.findAllFilesByStorageId(storageFromId, connection)) {
-                Utils.formatSupport(StorageDAO.findById(storageToId, connection).getFormatsSupported(), file.getFormat());
-                file.setStorageId(storageToId);
+            storageTo = StorageDAO.findById(storageTo.getId(), connection);
+
+            ArrayList<File> filesFrom = FileDAO.findAllFilesByStorageId(storageFrom.getId(), connection);
+
+            ArrayList<File> filesTo = FileDAO.findAllFilesByStorageId(storageTo.getId(), connection);
+
+
+            if (Utils.freePlaceInStorage(storageTo, filesTo) <
+                    Utils.sizeOfAllFilesinStorage(filesFrom))
+                throw new Exception("storage with id: " + storageTo.getId() + " no free space");
+
+            for (File file : filesFrom){
+                Utils.formatSupport(storageTo.getFormatsSupported(), file.getFormat());
+            }
+
+
+
+            for (File file : filesFrom) {
+                file.setStorageId(storageTo.getId());
                 FileDAO.update(file, connection);
             }
 
@@ -110,18 +117,11 @@ public class GeneralDAO {
 
         try (Connection connection = getConnection()) {
             connection.setAutoCommit(false);
-            StorageDAO.findById(storageFrom.getId(), connection);
             storageTo = StorageDAO.findById(storageTo.getId(), connection);
             File file = FileDAO.findById(id, connection);
-
-            if (Utils.freePlaceInStorage(storageTo, FileDAO.findAllFilesByStorageId(storageTo.getId(), connection)) >= file.getSize())
-                for (String format : storageTo.getFormatsSupported()) {
-                    if (file.getFormat().equals(format)) {
-                        file.setStorageId(storageTo.getId());
-                        FileDAO.update(file, connection);
-                    }
-                }
-
+            validation(storageTo, file, connection);
+            file.setStorageId(storageTo.getId());
+            FileDAO.update(file, connection);
 
             connection.commit();
 
@@ -135,5 +135,15 @@ public class GeneralDAO {
 
     private static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL, USER, PASS);
+    }
+
+    private static void validation(Storage storage, File file, Connection connection) throws Exception {
+        if (file.getStorageId() == storage.getId())
+            throw new Exception("file with ID: " + file.getStorageId() + " already exists");
+        Utils.formatSupport(storage.getFormatsSupported(), file.getFormat());
+        if (Utils.freePlaceInStorage(storage, FileDAO.findAllFilesByStorageId(storage.getId(), connection)) < file.getSize())
+            throw new Exception("there is no free space in the storage with ID: " + storage.getId());
+
+
     }
 }

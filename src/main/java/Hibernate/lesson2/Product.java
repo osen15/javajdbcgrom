@@ -5,17 +5,16 @@ import javax.persistence.*;
 @Entity
 @Table(name = "PRODUCT")
 public class Product {
-    private long id;
+    private Long id;
     private String name;
     private String description;
-    private int price;
-
+    private Integer price;
 
     @Id
     @SequenceGenerator(name = "PR_SEQ", sequenceName = "PRODUCT_SEQ", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PR_SEQ")
     @Column(name = "ID")
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -30,11 +29,11 @@ public class Product {
     }
 
     @Column(name = "PRICE")
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -46,7 +45,9 @@ public class Product {
         this.description = description;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
+
+
 }

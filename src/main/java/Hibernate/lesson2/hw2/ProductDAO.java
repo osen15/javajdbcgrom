@@ -16,15 +16,16 @@ public class ProductDAO {
     private SessionFactory sessionFactory;
 
     public Product findById(Long id) {
-
-
         Product product = new Product();
+
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM PRODUCT WHERE ID = ?");
             nativeQuery.setParameter(1, id);
             product = (Product) nativeQuery.uniqueResult();
 
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -38,11 +39,13 @@ public class ProductDAO {
 
 
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM PRODUCT p WHERE p.NAME = ?");
             nativeQuery.setParameter(1, name);
             products = nativeQuery.getResultList();
 
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -56,11 +59,13 @@ public class ProductDAO {
 
 
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM PRODUCT p WHERE p.NAME like ?");
             nativeQuery.setParameter(1, "%" + name + "%");
             products = nativeQuery.getResultList();
 
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -74,12 +79,14 @@ public class ProductDAO {
 
 
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM PRODUCT WHERE PRICE >= ? AND PRICE <= ?");
             nativeQuery.setParameter(1, price - delta);
             nativeQuery.setParameter(2, price + delta);
-
             products = nativeQuery.getResultList();
+
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -93,11 +100,14 @@ public class ProductDAO {
 
 
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM PRODUCT p WHERE" +
                     " p.NAME = PR_NAME ORDER BY p.NAME ASC");
             nativeQuery.setParameter("PR_NAME", name);
             products = nativeQuery.getResultList();
+
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -111,11 +121,14 @@ public class ProductDAO {
 
 
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM PRODUCT p WHERE" +
                     " p.NAME = PR_NAME ORDER BY p.NAME DESC");
             nativeQuery.setParameter("PR_NAME", name);
             products = nativeQuery.getResultList();
+
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -130,13 +143,15 @@ public class ProductDAO {
 
 
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             NativeQuery nativeQuery = session.createNativeQuery("SELECT * FROM PRODUCT  WHERE" +
                     " PRICE >= ? AND PRICE <= ? ORDER BY PRICE DESC ");
             nativeQuery.setParameter(1, price - delta);
             nativeQuery.setParameter(2, price + delta);
-
             products = nativeQuery.getResultList();
+
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());

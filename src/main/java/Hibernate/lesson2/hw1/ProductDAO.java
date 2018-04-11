@@ -15,15 +15,16 @@ public class ProductDAO {
     private SessionFactory sessionFactory;
 
     public Product findById(Long id) {
-
-
         Product product = new Product();
+
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             Query query = session.createQuery("from Product where id = :id");
             query.setParameter("id", id);
             product = (Product) query.uniqueResult();
 
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -35,13 +36,14 @@ public class ProductDAO {
     public List findByName(String name) {
         List products = null;
 
-
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             Query query = session.createQuery("from Product where name = :name");
             query.setParameter("name", name);
             products = query.getResultList();
 
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -53,13 +55,14 @@ public class ProductDAO {
     public List containedName(String name) {
         List products = null;
 
-
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             Query query = session.createQuery("from Product where name like ?");
             query.setParameter(0, "%" + name + "%");
             products = query.getResultList();
 
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -71,14 +74,15 @@ public class ProductDAO {
     public List findByPrice(Integer price, Integer delta) {
         List products = null;
 
-
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             Query query = session.createQuery("from Product  where price >= ? and price <= ?");
             query.setParameter(0, price - delta);
             query.setParameter(0, price + delta);
-
             products = query.getResultList();
+
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -90,12 +94,14 @@ public class ProductDAO {
     public List findByNameSortedAsc(String name) {
         List products = null;
 
-
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             Query query = session.createQuery("from Product where name = :name order by name asc");
             query.setParameter("name", name);
             products = query.getResultList();
+
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -107,12 +113,14 @@ public class ProductDAO {
     public List findByNameSortedDesc(String name) {
         List products = null;
 
-
         try (Session session = createSessionFactory().openSession()) {
+            session.beginTransaction();
 
             Query query = session.createQuery("from Product where name = :name order by name desc ");
             query.setParameter("name", name);
             products = query.getResultList();
+
+            session.getTransaction().commit();
         } catch (HibernateException e) {
             System.err.println("failed");
             System.err.println(e.getMessage());
@@ -124,7 +132,6 @@ public class ProductDAO {
 
     public List findByPriceSortedDesc(Integer price, Integer delta) {
         List products = null;
-
 
         try (Session session = createSessionFactory().openSession()) {
 

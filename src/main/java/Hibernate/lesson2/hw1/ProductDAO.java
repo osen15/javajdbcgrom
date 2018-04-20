@@ -8,142 +8,73 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ProductDAO {
     private SessionFactory sessionFactory;
+    private HashMap<Integer, Object> putResults = new HashMap<>();
 
     public Product findById(Long id) {
-        Product product = new Product();
-
-        try (Session session = createSessionFactory().openSession()) {
-            session.beginTransaction();
-
-            Query query = session.createQuery("from Product where id = :id");
-            query.setParameter("id", id);
-            product = (Product) query.uniqueResult();
-
-            session.getTransaction().commit();
-        } catch (HibernateException e) {
-            System.err.println("failed");
-            System.err.println(e.getMessage());
-
-        }
-        return product;
+        String findById = "from Product where id = ?";
+        putResults.put(0, id);
+        return genParameter(findById, putResults).get(0);
     }
 
     public List findByName(String name) {
-        List products = null;
-
-        try (Session session = createSessionFactory().openSession()) {
-            session.beginTransaction();
-
-            Query query = session.createQuery("from Product where name = :name");
-            query.setParameter("name", name);
-            products = query.getResultList();
-
-            session.getTransaction().commit();
-        } catch (HibernateException e) {
-            System.err.println("failed");
-            System.err.println(e.getMessage());
-
-        }
-        return products;
+        String findByName = "from Product where name = ?";
+        putResults.put(0, name);
+        return genParameter(findByName, putResults);
     }
 
     public List containedName(String name) {
-        List products = null;
+        String containedName = "from Product where name like ?";
+        putResults.put(0, "%" + name + "%");
+        return genParameter(containedName, putResults);
 
-        try (Session session = createSessionFactory().openSession()) {
-            session.beginTransaction();
-
-            Query query = session.createQuery("from Product where name like ?");
-            query.setParameter(0, "%" + name + "%");
-            products = query.getResultList();
-
-            session.getTransaction().commit();
-        } catch (HibernateException e) {
-            System.err.println("failed");
-            System.err.println(e.getMessage());
-
-        }
-        return products;
     }
 
     public List findByPrice(Integer price, Integer delta) {
-        List products = null;
-
-        try (Session session = createSessionFactory().openSession()) {
-            session.beginTransaction();
-
-            Query query = session.createQuery("from Product  where price >= ? and price <= ?");
-            query.setParameter(0, price - delta);
-            query.setParameter(0, price + delta);
-            products = query.getResultList();
-
-            session.getTransaction().commit();
-        } catch (HibernateException e) {
-            System.err.println("failed");
-            System.err.println(e.getMessage());
-
-        }
-        return products;
+        String findByPrice = "from Product  where price >= ? and price <= ?";
+        putResults.put(0, price - delta);
+        putResults.put(1, price + delta);
+        return genParameter(findByPrice, putResults);
     }
 
     public List findByNameSortedAsc(String name) {
-        List products = null;
-
-        try (Session session = createSessionFactory().openSession()) {
-            session.beginTransaction();
-
-            Query query = session.createQuery("from Product where name = :name order by name asc");
-            query.setParameter("name", name);
-            products = query.getResultList();
-
-            session.getTransaction().commit();
-        } catch (HibernateException e) {
-            System.err.println("failed");
-            System.err.println(e.getMessage());
-
-        }
-        return products;
+        String findByNameSortedAsc = "from Product where name = ? order by name asc";
+        putResults.put(0, name);
+        return genParameter(findByNameSortedAsc, putResults);
     }
 
     public List findByNameSortedDesc(String name) {
-        List products = null;
-
-        try (Session session = createSessionFactory().openSession()) {
-            session.beginTransaction();
-
-            Query query = session.createQuery("from Product where name = :name order by name desc ");
-            query.setParameter("name", name);
-            products = query.getResultList();
-
-            session.getTransaction().commit();
-        } catch (HibernateException e) {
-            System.err.println("failed");
-            System.err.println(e.getMessage());
-
-        }
-        return products;
+        String findByNameSortedDesc = "from Product where name = ? order by name desc";
+        putResults.put(0, name);
+        return genParameter(findByNameSortedDesc, putResults);
     }
 
 
     public List findByPriceSortedDesc(Integer price, Integer delta) {
-        List products = null;
 
+        String findByPrice = "from Product  where price >= ? and price <= ? order by price desc";
+        putResults.put(0, price - delta);
+        putResults.put(1, price + delta);
+        return genParameter(findByPrice, putResults);
+    }
+
+    private List<Product> genParameter(String hql, HashMap<Integer, Object> objectMap) {
+        List<Product> products = null;
         try (Session session = createSessionFactory().openSession()) {
-
-            Query query = session.createQuery("from Product  where price >= ? and price <= ? order by price desc");
-            query.setParameter(0, price - delta);
-            query.setParameter(0, price + delta);
-
+            Query query = session.createQuery(hql);
+            for (Map.Entry<Integer, Object> entry : objectMap.entrySet())
+                query.setParameter(entry.getKey(), entry.getValue());
             products = query.getResultList();
-        } catch (HibernateException e) {
-            System.err.println("failed");
-            System.err.println(e.getMessage());
 
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
         return products;
     }

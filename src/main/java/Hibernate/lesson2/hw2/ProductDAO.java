@@ -161,6 +161,9 @@ public class ProductDAO {
     }
 
 
+
+
+
     private SessionFactory createSessionFactory() {
         //Singleton pattern
         if (sessionFactory == null)

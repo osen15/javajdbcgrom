@@ -10,5 +10,8 @@
         <property name="hibernate.connection.password">11111111</property>
 
         <mapping class="Hibernate.lesson2.Product"></mapping>
+        <mapping class="Hibernate.lesson3.Hotel"></mapping>
+        <mapping class="Hibernate.lesson3.Room"></mapping>
+
     </session-factory>
 </hibernate-configuration>

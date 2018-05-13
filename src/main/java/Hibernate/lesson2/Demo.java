@@ -2,8 +2,6 @@ package Hibernate.lesson2;
 
 import Hibernate.lesson1.Product;
 
-import java.util.Arrays;
-import java.util.List;
 
 public class Demo {
     public static void main(String[] args) {

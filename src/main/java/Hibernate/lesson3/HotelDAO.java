@@ -1,6 +1,8 @@
 package Hibernate.lesson3;
 
 
+import org.hibernate.Transaction;
+
 public class HotelDAO {
 
 
@@ -9,8 +11,18 @@ public class HotelDAO {
     }
 
     public void delete(long id) {
-        GeneralDAO.delete("HOTEL", id);
+
+
+      //  RoomDAO roomDAO = new RoomDAO();
+     //  for (Room room : roomDAO.roomsByHotelId(id)) {
+     //       room.setHotel(null);
+     //       roomDAO.update(room);
+     //   }
+
+        GeneralDAO.delete("Hotel", id);
     }
+
+
 
     public void update(Hotel hotel) {
         GeneralDAO.update(hotel);

@@ -13,6 +13,7 @@ public class ProductDAO {
 
     private SessionFactory sessionFactory;
 
+
     public Product save(Product product) {
         //1 create session/tr
         Transaction tr = null;

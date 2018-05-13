@@ -12,27 +12,27 @@ public class Demo {
         hotel.setCity("test");
         hotel.setStreet("test");
 
-       // hotelDAO.save(hotel);
-       // hotelDAO.delete(1);
+        // hotelDAO.save(hotel);
+        // hotelDAO.delete(1);
         //hotelDAO.update(hotel);
-       // hotelDAO.findById(1);
+        // hotelDAO.findById(1);
 
-       RoomDAO roomDAO = new RoomDAO();
-       Room room = new Room();
-       room.setId((long) 2);
-       room.setNumberOfGuests(2);
-       room.setPrice((double) 1000);
-       room.setBreakfastIncluded(1);
-       room.setPetsAllowed(1);
-       room.setDateAvaliableFrom(new Date());
-       room.setHotel(hotel);
+        RoomDAO roomDAO = new RoomDAO();
+        Room room = new Room();
+        room.setId((long) 2);
+        room.setNumberOfGuests(2);
+        room.setPrice((double) 1000);
+        room.setBreakfastIncluded(1);
+        room.setPetsAllowed(1);
+        room.setDateAvaliableFrom(new Date());
+        room.setHotel(hotel);
 
-      // roomDAO.save(room);
-      // roomDAO.delete(2);
-      // roomDAO.update(room);
-     //  roomDAO.findById(1);
+        // roomDAO.save(room);
+        // roomDAO.delete(2);
+        // roomDAO.update(room);
+        //  roomDAO.findById(1);
 
-
+       // System.out.println(roomDAO.roomsByHotelId((long) 1));
 
 
     }

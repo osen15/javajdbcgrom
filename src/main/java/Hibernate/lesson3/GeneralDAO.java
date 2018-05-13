@@ -8,6 +8,9 @@ import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class GeneralDAO {
 
@@ -88,7 +91,9 @@ public class GeneralDAO {
     }
 
 
-    private static SessionFactory createSessionFactory() {
+
+
+    public static SessionFactory createSessionFactory() {
         if (sessionFactory == null)
             sessionFactory = new Configuration().configure().buildSessionFactory();
         return sessionFactory;

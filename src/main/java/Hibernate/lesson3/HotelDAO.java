@@ -11,17 +11,8 @@ public class HotelDAO {
     }
 
     public void delete(long id) {
-
-
-      //  RoomDAO roomDAO = new RoomDAO();
-     //  for (Room room : roomDAO.roomsByHotelId(id)) {
-     //       room.setHotel(null);
-     //       roomDAO.update(room);
-     //   }
-
         GeneralDAO.delete("Hotel", id);
     }
-
 
 
     public void update(Hotel hotel) {

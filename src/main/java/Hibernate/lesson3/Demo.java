@@ -13,7 +13,7 @@ public class Demo {
         hotel.setStreet("test");
 
         // hotelDAO.save(hotel);
-        // hotelDAO.delete(1);
+         hotelDAO.delete(1);
         //hotelDAO.update(hotel);
         // hotelDAO.findById(1);
 

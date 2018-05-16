@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 
 import java.util.HashMap;
@@ -48,17 +49,20 @@ public class GeneralDAO {
             if (tr != null) tr.rollback();
 
         }
-        System.out.println("update is done!");
+        System.out.println("save is done!");
     }
 
 
     public static void delete(String tableName, long id) {
+       Transaction tr;
 
-        Transaction tr;
         try (Session session = createSessionFactory().openSession()) {
             tr = session.getTransaction();
             tr.begin();
-            session.delete(findById(tableName, id));
+
+            Query query =session.createQuery("delete from "+ tableName +" where id =:id ");
+            query.setParameter("id", id);
+            query.executeUpdate();
             tr.commit();
 
         } catch (HibernateException e) {
@@ -71,11 +75,11 @@ public class GeneralDAO {
 
     }
 
-    public static  <T> T findById(String tableName, long id) {
+    public static <T> T findById(String tableName, long id) {
 
         T res = null;
 
-        try (Session session = sessionFactory.openSession()) {
+        try (Session session = createSessionFactory().openSession()) {
 
             Query query = session.createQuery("FROM " + tableName + " WHERE id = :id ");
             query.setParameter("id", id);
@@ -89,8 +93,6 @@ public class GeneralDAO {
 
         return res;
     }
-
-
 
 
     public static SessionFactory createSessionFactory() {

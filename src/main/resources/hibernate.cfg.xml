@@ -12,6 +12,10 @@
         <mapping class="Hibernate.lesson2.Product"></mapping>
         <mapping class="Hibernate.lesson3.Hotel"></mapping>
         <mapping class="Hibernate.lesson3.Room"></mapping>
+        <mapping class="Hibernate.lesson4.entities.Hotel"></mapping>
+        <mapping class="Hibernate.lesson4.entities.Room"></mapping>
+        <mapping class="Hibernate.lesson4.entities.User"></mapping>
+        <mapping class="Hibernate.lesson4.entities.Order"></mapping>
 
     </session-factory>
 </hibernate-configuration>

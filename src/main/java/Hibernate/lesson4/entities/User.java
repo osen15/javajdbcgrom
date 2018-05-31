@@ -21,8 +21,8 @@ public class User {
 
 
     @Id
-   // @SequenceGenerator(name = "U_SEQ", sequenceName = "USERL_SEQ", allocationSize = 1)
-   // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "U_SEQ")
+    @SequenceGenerator(name = "U_SEQ", sequenceName = "USER_SEQ", allocationSize = 0)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "U_SEQ")
     @Column(name = "ID")
     public long getId() {
         return id;

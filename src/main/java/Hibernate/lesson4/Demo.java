@@ -9,7 +9,9 @@ import Hibernate.lesson4.entities.Filter;
 import Hibernate.lesson4.entities.Hotel;
 import Hibernate.lesson4.entities.Room;
 import Hibernate.lesson4.entities.User;
+import Hibernate.lesson4.service.OrderService;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class Demo {
@@ -42,16 +44,31 @@ public class Demo {
 
 
         User user = new User();
-        user.setId(3);
-        user.setUserName("Oleg");
+
+        user.setUserName("Ann3");
         user.setPassword("1111");
         user.setCountry("Ukr");
         user.setUserType(UserType.USER);
-        //userDAO.save(user);
+        //UserDAO.save(user);
+        //System.out.println(UserDAO.findById(2));
 
 
         Filter filter = new Filter("Opera");
-        RoomDAO.roomFilter(filter);
+       // RoomDAO.roomFilter(filter);
+
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, 31);
+        cal.set(Calendar.MONTH, 4);
+        cal.set(Calendar.YEAR, 2017);
+
+        Date d = cal.getTime();
+       // System.out.println(d);
+
+
+       // OrderService.bookRoom(3,2, d);
+
+        UserDAO.findById(2);
 
 
     }

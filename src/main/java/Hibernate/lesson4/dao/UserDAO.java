@@ -11,7 +11,7 @@ public class UserDAO {
     }
 
     public static void delete(long id) {
-        GeneralDAO.delete("USER4", id);
+        GeneralDAO.delete("User", id);
     }
 
 
@@ -21,7 +21,7 @@ public class UserDAO {
 
     public static User  findById(long id) {
 
-        return GeneralDAO.findById("USER4", id);
+        return GeneralDAO.findById("User", id);
     }
 
 

@@ -1,5 +1,6 @@
 package Hibernate.lesson4.service;
 
+import Hibernate.lesson4.dao.OrderDAO;
 import Hibernate.lesson4.dao.RoomDAO;
 import Hibernate.lesson4.dao.UserDAO;
 import Hibernate.lesson4.entities.Order;
@@ -27,13 +28,19 @@ public class OrderService {
 
         order.setMoneyPaid(room.getPrice());
 
+        OrderDAO.save(order);
+
 
     }
 
 
-    public  static  void cancelReservation(long roomId, long userId){
+    public static void cancelReservation(long roomId, long userId) {
+        OrderDAO.delete(OrderDAO.findRoomAndUser(roomId, userId));
+        Room room = RoomDAO.findById(roomId);
+        room.setDateAvailableFrom(new Date());
+        RoomDAO.update(room);
 
-    }
+        }
 
 
 }

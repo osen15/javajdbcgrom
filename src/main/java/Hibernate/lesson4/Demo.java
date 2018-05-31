@@ -2,6 +2,7 @@ package Hibernate.lesson4;
 
 
 import Hibernate.lesson4.dao.HotelDAO;
+import Hibernate.lesson4.dao.OrderDAO;
 import Hibernate.lesson4.dao.RoomDAO;
 
 import Hibernate.lesson4.dao.UserDAO;
@@ -59,16 +60,22 @@ public class Demo {
 
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, 31);
-        cal.set(Calendar.MONTH, 4);
-        cal.set(Calendar.YEAR, 2017);
+        cal.set(Calendar.MONTH, 5);
+        cal.set(Calendar.YEAR, 2018);
 
         Date d = cal.getTime();
        // System.out.println(d);
 
 
-       // OrderService.bookRoom(3,2, d);
+        OrderService.bookRoom(3,2, d);
 
-        UserDAO.findById(2);
+       // UserDAO.findById(2);
+
+       // System.out.println(OrderDAO.findRoomAndUser(3,2));
+
+        //System.out.println(OrderDAO.findById(1));
+
+        //OrderService.cancelReservation(3,2);
 
 
     }

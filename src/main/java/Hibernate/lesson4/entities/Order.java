@@ -27,7 +27,7 @@ public class Order {
         return user;
     }
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ROOM_ID")
     public Room getRoom() {
         return room;
@@ -70,5 +70,18 @@ public class Order {
 
     public void setMoneyPaid(double moneyPaid) {
         this.moneyPaid = moneyPaid;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", user=" + user +
+                ", room=" + room +
+                ", dateFrom=" + dateFrom +
+                ", dateTo=" + dateTo +
+                ", moneyPaid=" + moneyPaid +
+                '}';
     }
 }

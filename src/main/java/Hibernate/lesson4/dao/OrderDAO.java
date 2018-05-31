@@ -9,7 +9,7 @@ import java.util.List;
 public class OrderDAO {
 
 
-    private static String FIND_ROOMID_AND_USER_ID_IN_ORDER = "from Order where user = :userId and room = :roomId";
+    private static String FIND_ROOMID_AND_USER_ID_IN_ORDER = "from Order where USER_ID = :userId and ROOM_ID = :roomId";
 
     public static void save(Order order) {
         GeneralDAO.save(order);
@@ -24,17 +24,18 @@ public class OrderDAO {
         GeneralDAO.update(order);
     }
 
-    public static void findById(long id) {
-        GeneralDAO.findById("Order", id);
+    public static Order findById(long id) {
+
+        return GeneralDAO.findById("Order", id);
     }
 
 
-    public static long findRoomAndUser(long roomId, long userId) {
+    public static List<Order> findRoomAndUser(long roomId, long userId) {
         HashMap<String, Object> putResults = new HashMap<>();
         putResults.put("userId", userId);
         putResults.put("roomId", roomId);
-        Order order = (Order) GeneralDAO.setParameter(FIND_ROOMID_AND_USER_ID_IN_ORDER, putResults).get(0);
-        return order.getId();
+        return GeneralDAO.setParameter(FIND_ROOMID_AND_USER_ID_IN_ORDER, putResults);
+
 
     }
 

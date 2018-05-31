@@ -11,9 +11,9 @@ public class OrderController {
     }
 
 
-    public static void cancelReservation(long roomId, long userId) {
-        OrderService.cancelReservation(roomId, userId);
-    }
+  //  public static void cancelReservation(long roomId, long userId) {
+   //     OrderService.cancelReservation(roomId, userId);
+   // }
 
 
 

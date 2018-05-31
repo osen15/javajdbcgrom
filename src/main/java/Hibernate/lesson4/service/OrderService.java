@@ -35,12 +35,13 @@ public class OrderService {
 
 
     public static void cancelReservation(long roomId, long userId) {
-        OrderDAO.delete(OrderDAO.findRoomAndUser(roomId, userId));
+        OrderDAO.delete((OrderDAO.findRoomAndUser(roomId, userId).get(0)).getId());
         Room room = RoomDAO.findById(roomId);
         room.setDateAvailableFrom(new Date());
+        room.se
         RoomDAO.update(room);
 
-        }
+    }
 
 
 }

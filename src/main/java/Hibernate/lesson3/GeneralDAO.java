@@ -6,10 +6,10 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -54,13 +54,13 @@ public class GeneralDAO {
 
 
     public static void delete(String tableName, long id) {
-       Transaction tr;
+        Transaction tr;
 
         try (Session session = createSessionFactory().openSession()) {
             tr = session.getTransaction();
             tr.begin();
 
-            Query query =session.createQuery("delete from "+ tableName +" where id =:id ");
+            Query query = session.createQuery("delete from " + tableName + " where id =:id ");
             query.setParameter("id", id);
             query.executeUpdate();
             tr.commit();
@@ -93,6 +93,8 @@ public class GeneralDAO {
 
         return res;
     }
+
+
 
 
     public static SessionFactory createSessionFactory() {
